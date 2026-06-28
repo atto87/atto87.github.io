@@ -17,6 +17,19 @@ void main() {
     expect(find.byIcon(Icons.refresh), findsOneWidget);
   });
 
+  testWidgets('home screen fits iPhone XS without internal scrolling',
+      (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await tester.binding.setSurfaceSize(const Size(375, 812));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(const HanaQuizApp());
+    await tester.pumpAndSettle();
+
+    expect(find.byType(FittedBox), findsOneWidget);
+    expect(find.byType(Scrollable), findsNothing);
+  });
+
   testWidgets('shows encyclopedia filter tabs', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(home: EncyclopediaScreen()),

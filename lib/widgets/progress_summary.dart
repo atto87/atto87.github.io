@@ -6,15 +6,17 @@ class ProgressSummary extends StatelessWidget {
   const ProgressSummary({
     super.key,
     required this.summary,
+    this.compact = false,
   });
 
   final ProgressSummaryData summary;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(compact ? 12 : 18),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -23,38 +25,47 @@ class ProgressSummary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             '学習状況',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+            style: TextStyle(
+              fontSize: compact ? 16 : 18,
+              fontWeight: FontWeight.w800,
+            ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: compact ? 8 : 14),
           Row(
             children: [
               Expanded(
                 child: _SummaryItem(
                   label: '正解数',
                   value: '${summary.totalCorrect}',
+                  compact: compact,
                 ),
               ),
               Expanded(
                 child: _SummaryItem(
                   label: '花の数',
                   value: '${summary.registeredFlowerCount}',
+                  compact: compact,
                 ),
               ),
               Expanded(
                 child: _SummaryItem(
                   label: '苦手',
                   value: '${summary.weakFlowerCount}',
+                  compact: compact,
                 ),
               ),
             ],
           ),
           if (summary.lastStudiedAt != null) ...[
-            const SizedBox(height: 12),
+            SizedBox(height: compact ? 8 : 12),
             Text(
-              '最後の学習: ${_formatDate(summary.lastStudiedAt!)}',
-              style: const TextStyle(color: Color(0xFF7A666B)),
+              '最後の学習 ${_formatDate(summary.lastStudiedAt!)}',
+              style: TextStyle(
+                color: const Color(0xFF7A666B),
+                fontSize: compact ? 12 : 14,
+              ),
             ),
           ],
         ],
@@ -71,10 +82,12 @@ class _SummaryItem extends StatelessWidget {
   const _SummaryItem({
     required this.label,
     required this.value,
+    required this.compact,
   });
 
   final String label;
   final String value;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -83,18 +96,19 @@ class _SummaryItem extends StatelessWidget {
       children: [
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 24,
+          style: TextStyle(
+            fontSize: compact ? 20 : 24,
             fontWeight: FontWeight.w900,
-            color: Color(0xFFE35D82),
+            color: const Color(0xFFE35D82),
           ),
         ),
-        const SizedBox(height: 2),
+        SizedBox(height: compact ? 0 : 2),
         Text(
           label,
-          style: const TextStyle(
-            color: Color(0xFF7A666B),
+          style: TextStyle(
+            color: const Color(0xFF7A666B),
             fontWeight: FontWeight.w700,
+            fontSize: compact ? 12 : 14,
           ),
         ),
       ],
