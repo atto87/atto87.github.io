@@ -167,8 +167,7 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: AppBar(
-            title: Text(widget.reviewOnly ? '復習' : widget.difficulty.title)),
+        appBar: AppBar(title: Text(widget.reviewOnly ? '復習' : 'クイズ')),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -209,25 +208,15 @@ class _QuizScreenState extends State<QuizScreen> {
       );
     }
 
-    final isCorrect = _selectedName == _currentFlower.name;
-
     return Scaffold(
       appBar: AppBar(
-          title: Text(widget.reviewOnly ? '復習' : widget.difficulty.title)),
+        title: Text(widget.reviewOnly ? '復習' : 'クイズ'),
+        toolbarHeight: 48,
+      ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
           children: [
-            if (!widget.reviewOnly) ...[
-              Text(
-                widget.difficulty.appLabel,
-                style: const TextStyle(
-                  color: Color(0xFF7A666B),
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 8),
-            ],
             Text(
               '${_currentIndex + 1} / ${_questions.length}',
               style: const TextStyle(
@@ -235,11 +224,11 @@ class _QuizScreenState extends State<QuizScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 6),
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: AspectRatio(
-                aspectRatio: 4 / 3,
+                aspectRatio: 16 / 10,
                 child: Image.asset(
                   _currentFlower.imagePath,
                   fit: BoxFit.cover,
@@ -247,12 +236,12 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 22),
+            const SizedBox(height: 12),
             const Text(
               'この花の名前は？',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
+              style: TextStyle(fontSize: 21, fontWeight: FontWeight.w900),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             for (final choice in _choices) ...[
               AnswerButton(
                 text: choice,
@@ -261,21 +250,10 @@ class _QuizScreenState extends State<QuizScreen> {
                 isCorrectAnswer: choice == _currentFlower.name,
                 hasAnswered: _hasAnswered,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
             ],
             if (_hasAnswered) ...[
-              const SizedBox(height: 8),
-              Text(
-                isCorrect ? '正解！' : '不正解。正解は${_currentFlower.name}です',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  color: isCorrect
-                      ? const Color(0xFF25823B)
-                      : Theme.of(context).colorScheme.error,
-                ),
-              ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 6),
               FilledButton(
                 onPressed: _goNext,
                 child: Text(

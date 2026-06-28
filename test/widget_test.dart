@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hana_quiz_zukan/models/flower.dart';
 import 'package:hana_quiz_zukan/screens/encyclopedia_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,6 +29,20 @@ void main() {
 
     expect(find.byType(FittedBox), findsOneWidget);
     expect(find.byType(Scrollable), findsNothing);
+  });
+
+  testWidgets('quiz omits difficulty description label',
+      (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
+
+    await tester.pumpWidget(const HanaQuizApp());
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(FilledButton).first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('クイズ'), findsOneWidget);
+    expect(find.text('この花の名前は？'), findsOneWidget);
+    expect(find.text(FlowerDifficulty.beginner.appLabel), findsNothing);
   });
 
   testWidgets('shows encyclopedia filter tabs', (WidgetTester tester) async {

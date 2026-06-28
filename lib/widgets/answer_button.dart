@@ -30,12 +30,46 @@ class AnswerButton extends StatelessWidget {
           foregroundColor: const Color(0xFF3F3336),
           backgroundColor: backgroundColor,
           side: BorderSide(color: borderColor, width: 1.5),
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
           alignment: Alignment.centerLeft,
         ),
-        child: Text(text),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                text,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (_statusLabel != null) ...[
+              const SizedBox(width: 8),
+              _AnswerStatus(label: _statusLabel!, color: _statusColor(context)),
+            ],
+          ],
+        ),
       ),
     );
+  }
+
+  String? get _statusLabel {
+    if (!hasAnswered) {
+      return null;
+    }
+    if (isCorrectAnswer) {
+      return '正解！';
+    }
+    if (isSelected) {
+      return '不正解';
+    }
+    return null;
+  }
+
+  Color _statusColor(BuildContext context) {
+    if (isCorrectAnswer) {
+      return const Color(0xFF25823B);
+    }
+    return Theme.of(context).colorScheme.error;
   }
 
   Color _backgroundColor() {
@@ -62,5 +96,27 @@ class AnswerButton extends StatelessWidget {
       return colorScheme.error;
     }
     return const Color(0xFFEADDE1);
+  }
+}
+
+class _AnswerStatus extends StatelessWidget {
+  const _AnswerStatus({
+    required this.label,
+    required this.color,
+  });
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label,
+      style: TextStyle(
+        color: color,
+        fontSize: 13,
+        fontWeight: FontWeight.w900,
+      ),
+    );
   }
 }
