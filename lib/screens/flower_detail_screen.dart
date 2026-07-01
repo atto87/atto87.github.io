@@ -38,6 +38,7 @@ class FlowerDetailScreen extends StatelessWidget {
             _InfoRow(label: '段階', value: flower.difficulty.appLabel),
             _InfoRow(label: '季節', value: flower.season),
             _InfoRow(label: '色', value: flower.colors.join('、')),
+            _InfoRow(label: '花言葉', value: flower.flowerMeanings.join('、')),
             const SizedBox(height: 16),
             _Section(title: '特徴', body: flower.description),
             _Section(title: '見分け方', body: flower.howToIdentify),
@@ -134,7 +135,7 @@ class _InfoRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 64,
+            width: 72,
             child: Text(
               label,
               style: const TextStyle(

@@ -59,8 +59,18 @@ class FlowerCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
+                    '花言葉：${flower.flowerMeanings.first}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Color(0xFFE35D82),
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
                     flower.description,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(color: Color(0xFF6E6064)),
                   ),

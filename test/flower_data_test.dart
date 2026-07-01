@@ -31,6 +31,20 @@ void main() {
     }
   });
 
+  test('all flowers have one to three flower meanings', () {
+    final meaningIds = flowerMeaningsById.keys.toSet();
+
+    expect(meaningIds, containsAll(flowers.map((flower) => flower.id)));
+    for (final flower in flowers) {
+      expect(
+        flower.flowerMeanings.length,
+        inInclusiveRange(1, 3),
+        reason: flower.id,
+      );
+      expect(flower.flowerMeanings, isNot(contains('準備中')));
+    }
+  });
+
   test('all flowers have detail text beyond temporary placeholders', () {
     for (final flower in flowers) {
       expect(flower.colors, isNot(contains('準備中')));

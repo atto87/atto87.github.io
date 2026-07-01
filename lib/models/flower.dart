@@ -9,6 +9,7 @@ class Flower {
     required this.description,
     required this.howToIdentify,
     required this.similarFlowers,
+    required this.flowerMeanings,
   });
 
   final String id;
@@ -20,6 +21,7 @@ class Flower {
   final String description;
   final String howToIdentify;
   final List<String> similarFlowers;
+  final List<String> flowerMeanings;
 }
 
 enum FlowerDifficulty {
