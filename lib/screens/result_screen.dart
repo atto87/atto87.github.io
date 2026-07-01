@@ -46,7 +46,7 @@ class ResultScreen extends StatelessWidget {
             if (!result.isReviewMode) ...[
               const SizedBox(height: 8),
               Text(
-                result.difficulty.appLabel,
+                result.season?.quizTitle ?? result.difficulty.appLabel,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Color(0xFF7A666B),
@@ -83,7 +83,10 @@ class ResultScreen extends StatelessWidget {
                     : QuizScreen.routeName,
                 arguments: result.isReviewMode
                     ? null
-                    : QuizScreenArguments(difficulty: result.difficulty),
+                    : QuizScreenArguments(
+                        difficulty: result.difficulty,
+                        season: result.season,
+                      ),
               ),
               icon: const Icon(Icons.replay),
               label: const Text('もう一度挑戦'),

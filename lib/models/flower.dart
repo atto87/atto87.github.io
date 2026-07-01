@@ -30,6 +30,13 @@ enum FlowerDifficulty {
   advanced,
 }
 
+enum FlowerQuizSeason {
+  spring,
+  summer,
+  autumn,
+  winter,
+}
+
 extension FlowerDifficultyLabel on FlowerDifficulty {
   String get title {
     switch (this) {
@@ -52,4 +59,21 @@ extension FlowerDifficultyLabel on FlowerDifficulty {
         return '上級：植物園・花好き向けの花';
     }
   }
+}
+
+extension FlowerQuizSeasonLabel on FlowerQuizSeason {
+  String get label {
+    switch (this) {
+      case FlowerQuizSeason.spring:
+        return '春';
+      case FlowerQuizSeason.summer:
+        return '夏';
+      case FlowerQuizSeason.autumn:
+        return '秋';
+      case FlowerQuizSeason.winter:
+        return '冬';
+    }
+  }
+
+  String get quizTitle => '$labelの花クイズ';
 }

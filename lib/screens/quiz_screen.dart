@@ -14,12 +14,14 @@ class QuizScreen extends StatefulWidget {
     super.key,
     this.reviewOnly = false,
     this.difficulty = FlowerDifficulty.beginner,
+    this.season,
   });
 
   static const String routeName = '/quiz';
 
   final bool reviewOnly;
   final FlowerDifficulty difficulty;
+  final FlowerQuizSeason? season;
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -27,10 +29,12 @@ class QuizScreen extends StatefulWidget {
 
 class QuizScreenArguments {
   const QuizScreenArguments({
-    required this.difficulty,
+    this.difficulty = FlowerDifficulty.beginner,
+    this.season,
   });
 
   final FlowerDifficulty difficulty;
+  final FlowerQuizSeason? season;
 }
 
 class _QuizScreenState extends State<QuizScreen> {
@@ -48,6 +52,13 @@ class _QuizScreenState extends State<QuizScreen> {
   bool _hasAnswered = false;
 
   Flower get _currentFlower => _questions[_currentIndex];
+
+  String get _screenTitle {
+    if (widget.reviewOnly) {
+      return '復習';
+    }
+    return widget.season?.quizTitle ?? 'クイズ';
+  }
 
   @override
   void initState() {
@@ -73,7 +84,7 @@ class _QuizScreenState extends State<QuizScreen> {
   Future<List<Flower>> _buildNormalQuestions() async {
     final progressMap = await _progressService.getAllProgress();
     final prioritizedFlowers = prioritizeUnseenFlowers(
-      flowers: flowersByDifficulty(widget.difficulty),
+      flowers: _questionPool(),
       progressMap: progressMap,
       random: _random,
     );
@@ -99,11 +110,9 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _prepareChoices() {
-    final otherFlowers = flowers
+    final otherFlowers = _choicePool()
         .where(
-          (flower) =>
-              flower.id != _currentFlower.id &&
-              flower.difficulty == _currentFlower.difficulty,
+          (flower) => flower.id != _currentFlower.id,
         )
         .toList()
       ..shuffle(_random);
@@ -118,6 +127,22 @@ class _QuizScreenState extends State<QuizScreen> {
       _selectedName = null;
       _hasAnswered = false;
     });
+  }
+
+  List<Flower> _questionPool() {
+    final season = widget.season;
+    if (season != null) {
+      return flowersBySeason(season);
+    }
+    return flowersByDifficulty(widget.difficulty);
+  }
+
+  List<Flower> _choicePool() {
+    final season = widget.season;
+    if (season != null) {
+      return flowersBySeason(season);
+    }
+    return flowersByDifficulty(_currentFlower.difficulty);
   }
 
   Future<void> _selectAnswer(String selectedName) async {
@@ -157,6 +182,7 @@ class _QuizScreenState extends State<QuizScreen> {
           answers: _records,
           isReviewMode: widget.reviewOnly,
           difficulty: widget.difficulty,
+          season: widget.season,
         ),
       );
       return;
@@ -172,7 +198,7 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: AppBar(title: Text(widget.reviewOnly ? '復習' : 'クイズ')),
+        appBar: AppBar(title: Text(_screenTitle)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -215,7 +241,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.reviewOnly ? '復習' : 'クイズ'),
+        title: Text(_screenTitle),
         toolbarHeight: 48,
       ),
       body: SafeArea(

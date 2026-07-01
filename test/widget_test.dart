@@ -18,7 +18,13 @@ void main() {
     await tester.pumpWidget(const HanaQuizApp());
     await tester.pumpAndSettle();
 
-    expect(find.byType(FilledButton), findsNWidgets(3));
+    expect(find.text(FlowerDifficulty.beginner.appLabel), findsOneWidget);
+    expect(find.text(FlowerDifficulty.intermediate.appLabel), findsOneWidget);
+    expect(find.text(FlowerDifficulty.advanced.appLabel), findsOneWidget);
+    expect(find.text('春の花'), findsOneWidget);
+    expect(find.text('夏の花'), findsOneWidget);
+    expect(find.text('秋の花'), findsOneWidget);
+    expect(find.text('冬の花'), findsOneWidget);
     expect(find.byIcon(Icons.menu_book), findsOneWidget);
     expect(find.byIcon(Icons.refresh), findsOneWidget);
   });
@@ -48,6 +54,32 @@ void main() {
     expect(find.text('クイズ'), findsOneWidget);
     expect(find.text('この花の名前は？'), findsOneWidget);
     expect(find.text(FlowerDifficulty.beginner.appLabel), findsNothing);
+  });
+
+  testWidgets('season quiz opens with season title',
+      (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
+
+    await tester.pumpWidget(const HanaQuizApp());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('春の花'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('春の花クイズ'), findsOneWidget);
+    expect(find.text('この花の名前は？'), findsOneWidget);
+  });
+
+  test('season quiz filters flowers by flower season', () {
+    expect(flowersBySeason(FlowerQuizSeason.spring), isNotEmpty);
+    expect(flowersBySeason(FlowerQuizSeason.summer), isNotEmpty);
+    expect(flowersBySeason(FlowerQuizSeason.autumn), isNotEmpty);
+    expect(flowersBySeason(FlowerQuizSeason.winter), isNotEmpty);
+
+    expect(
+      flowersBySeason(FlowerQuizSeason.autumn)
+          .every((flower) => flower.season.contains('秋')),
+      isTrue,
+    );
   });
 
   test('quiz flower meaning feedback text includes flower name and meanings',

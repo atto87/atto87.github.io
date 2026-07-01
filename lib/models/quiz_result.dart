@@ -19,6 +19,7 @@ class QuizResult {
     required this.answers,
     this.isReviewMode = false,
     this.difficulty = FlowerDifficulty.beginner,
+    this.season,
   });
 
   final int totalQuestions;
@@ -26,6 +27,7 @@ class QuizResult {
   final List<QuizAnswerRecord> answers;
   final bool isReviewMode;
   final FlowerDifficulty difficulty;
+  final FlowerQuizSeason? season;
 
   int get incorrectCount => totalQuestions - correctCount;
 

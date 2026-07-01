@@ -303,6 +303,24 @@ List<Flower> flowersByDifficulty(FlowerDifficulty difficulty) {
   return flowers.where((flower) => flower.difficulty == difficulty).toList();
 }
 
+List<Flower> flowersBySeason(FlowerQuizSeason season) {
+  return flowers.where((flower) {
+    final flowerSeason = flower.season;
+    switch (season) {
+      case FlowerQuizSeason.spring:
+        return flowerSeason.contains('春') || flowerSeason.contains('梅雨');
+      case FlowerQuizSeason.summer:
+        return flowerSeason.contains('夏') ||
+            flowerSeason.contains('初夏') ||
+            flowerSeason.contains('梅雨');
+      case FlowerQuizSeason.autumn:
+        return flowerSeason.contains('秋');
+      case FlowerQuizSeason.winter:
+        return flowerSeason.contains('冬');
+    }
+  }).toList();
+}
+
 Flower? flowerByName(String name) {
   for (final flower in flowers) {
     if (flower.name == name) {

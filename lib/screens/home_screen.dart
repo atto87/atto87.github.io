@@ -50,6 +50,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _openSeasonQuiz(FlowerQuizSeason season) async {
+    await Navigator.pushNamed(
+      context,
+      QuizScreen.routeName,
+      arguments: QuizScreenArguments(season: season),
+    );
+    if (mounted) {
+      _refreshSummary();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 compact: compact,
                 summaryFuture: _summaryFuture,
                 onOpenQuiz: _openQuiz,
+                onOpenSeasonQuiz: _openSeasonQuiz,
                 onOpenRoute: _openRoute,
               ),
             );
@@ -110,12 +122,14 @@ class _HomeContent extends StatelessWidget {
     required this.compact,
     required this.summaryFuture,
     required this.onOpenQuiz,
+    required this.onOpenSeasonQuiz,
     required this.onOpenRoute,
   });
 
   final bool compact;
   final Future<ProgressSummaryData> summaryFuture;
   final Future<void> Function(FlowerDifficulty difficulty) onOpenQuiz;
+  final Future<void> Function(FlowerQuizSeason season) onOpenSeasonQuiz;
   final Future<void> Function(String routeName) onOpenRoute;
 
   @override
@@ -170,6 +184,11 @@ class _HomeContent extends StatelessWidget {
           onPressed: () => onOpenQuiz(FlowerDifficulty.advanced),
         ),
         SizedBox(height: gap),
+        _SeasonQuizGrid(
+          compact: compact,
+          onOpenSeasonQuiz: onOpenSeasonQuiz,
+        ),
+        SizedBox(height: gap),
         _HomeButton(
           compact: compact,
           outlined: true,
@@ -186,6 +205,104 @@ class _HomeContent extends StatelessWidget {
           onPressed: () => onOpenRoute(ReviewScreen.routeName),
         ),
       ],
+    );
+  }
+}
+
+class _SeasonQuizGrid extends StatelessWidget {
+  const _SeasonQuizGrid({
+    required this.compact,
+    required this.onOpenSeasonQuiz,
+  });
+
+  final bool compact;
+  final Future<void> Function(FlowerQuizSeason season) onOpenSeasonQuiz;
+
+  @override
+  Widget build(BuildContext context) {
+    final gap = compact ? 8.0 : 10.0;
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _SeasonButton(
+                compact: compact,
+                season: FlowerQuizSeason.spring,
+                icon: Icons.eco,
+                onPressed: () => onOpenSeasonQuiz(FlowerQuizSeason.spring),
+              ),
+            ),
+            SizedBox(width: gap),
+            Expanded(
+              child: _SeasonButton(
+                compact: compact,
+                season: FlowerQuizSeason.summer,
+                icon: Icons.wb_sunny,
+                onPressed: () => onOpenSeasonQuiz(FlowerQuizSeason.summer),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: gap),
+        Row(
+          children: [
+            Expanded(
+              child: _SeasonButton(
+                compact: compact,
+                season: FlowerQuizSeason.autumn,
+                icon: Icons.spa,
+                onPressed: () => onOpenSeasonQuiz(FlowerQuizSeason.autumn),
+              ),
+            ),
+            SizedBox(width: gap),
+            Expanded(
+              child: _SeasonButton(
+                compact: compact,
+                season: FlowerQuizSeason.winter,
+                icon: Icons.ac_unit,
+                onPressed: () => onOpenSeasonQuiz(FlowerQuizSeason.winter),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _SeasonButton extends StatelessWidget {
+  const _SeasonButton({
+    required this.compact,
+    required this.season,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final bool compact;
+  final FlowerQuizSeason season;
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.tonalIcon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: compact ? 17 : 20),
+      label: Text(
+        '${season.label}の花',
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      style: FilledButton.styleFrom(
+        minimumSize: Size.fromHeight(compact ? 38 : 44),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        textStyle: TextStyle(
+          fontSize: compact ? 13 : 15,
+          fontWeight: FontWeight.w800,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: compact ? 8 : 12),
+      ),
     );
   }
 }

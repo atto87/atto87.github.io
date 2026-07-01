@@ -61,7 +61,9 @@ class HanaQuizApp extends StatelessWidget {
           final difficulty = arguments is QuizScreenArguments
               ? arguments.difficulty
               : FlowerDifficulty.beginner;
-          return QuizScreen(difficulty: difficulty);
+          final season =
+              arguments is QuizScreenArguments ? arguments.season : null;
+          return QuizScreen(difficulty: difficulty, season: season);
         },
         ReviewScreen.routeName: (_) => const ReviewScreen(),
         ResultScreen.routeName: (_) => const ResultScreen(),
