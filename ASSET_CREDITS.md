@@ -6,7 +6,7 @@ Keep these credits with distribution materials. CC BY and CC BY-SA licenses requ
 
 | Asset | Title | Creator | License | Source |
 |---|---|---|---|---|
-| `assets/images/sakura.jpg` | Sakura | [Nick Kenrick..](https://www.flickr.com/photos/33363480@N05) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/33363480@N05/13963544134) |
+| `assets/images/sakura.jpg` | Cherry Blossoms | [rumpleteaser](https://www.flickr.com/photos/45958245@N00) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/45958245@N00/122607514) |
 | `assets/images/tulip.jpg` | Tulips | [erikwestrum](https://www.flickr.com/photos/48371043@N06) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/48371043@N06/4590702749) |
 | `assets/images/sunflower.jpg` | Sunflowers | [Ruth and Dave](https://www.flickr.com/photos/95142644@N00) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/95142644@N00/9432335346) |
 | `assets/images/hydrangea.jpg` | Blue Hydrangea Flower Cluster | [Scott 97006](https://www.flickr.com/photos/29487672@N07) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/29487672@N07/14584149951) |
@@ -27,7 +27,7 @@ Keep these credits with distribution materials. CC BY and CC BY-SA licenses requ
 | `assets/images/higanbana.jpg` | Lycoris radiata (Matsudo, Chiba, Japan) | [t-mizo](https://www.flickr.com/photos/47626742@N07) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/47626742@N07/6203321204) |
 | `assets/images/poppy.jpg` | grainfield / corn field with red poppy flower | [photosteve101](https://www.flickr.com/photos/42931449@N07) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/42931449@N07/5829630480) |
 | `assets/images/tsutsuji.jpg` | Azaleas | [cbellh47](https://www.flickr.com/photos/25438769@N07) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/25438769@N07/5644249367) |
-| `assets/images/satsuki.jpg` | Azaleas | [cbellh47](https://www.flickr.com/photos/25438769@N07) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/25438769@N07/5644249367) |
+| `assets/images/satsuki.jpg` | Bonsai (Satsuki (Rhododendron indicum)) | [s.itto](https://www.flickr.com/photos/134987670@N03) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | [source](https://www.flickr.com/photos/134987670@N03/23411851023) |
 | `assets/images/fuji.jpg` | ãã¸ è¤ Wisteria floribunda. #flower #lensflare #fisheye #olloclip | [norio_nomura](https://www.flickr.com/photos/35973682@N04) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | [source](https://www.flickr.com/photos/35973682@N04/8703153111) |
 | `assets/images/nanohana.jpg` | Colza. ThÃ©sÃ©e-la-Romaine (Loir-et-Cher). | [sybarite48](https://www.flickr.com/photos/26082117@N07) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/26082117@N07/6976269398) |
 | `assets/images/shibazakura.jpg` | Moss Pink / Phlox subulata / èæ¡(ãã°ããã) | [TANAKA Juuyoh (ç°ä¸­åæ´)](https://www.flickr.com/photos/13910409@N05) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/13910409@N05/3446190448) |

@@ -2,18 +2,18 @@
     {
         "id":  "sakura",
         "asset":  "assets/images/sakura.jpg",
-        "title":  "Sakura",
-        "creator":  "Nick Kenrick..",
-        "creator_url":  "https://www.flickr.com/photos/33363480@N05",
+        "title":  "Cherry Blossoms",
+        "creator":  "rumpleteaser",
+        "creator_url":  "https://www.flickr.com/photos/45958245@N00",
         "license":  "CC BY 2.0",
         "license_code":  "by",
         "license_url":  "https://creativecommons.org/licenses/by/2.0/",
-        "source_url":  "https://www.flickr.com/photos/33363480@N05/13963544134",
+        "source_url":  "https://www.flickr.com/photos/45958245@N00/122607514",
         "image_url":  "https://live.staticflickr.com/7100/13963544134_3843615b8e_b.jpg",
-        "provider":  "flickr",
+        "provider":  "Openverse / Flickr",
         "width":  1024,
         "height":  768,
-        "attribution":  "\"Sakura\" by Nick Kenrick.. is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/."
+        "attribution":  "\"Cherry Blossoms\" by rumpleteaser is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/."
     },
     {
         "id":  "tulip",
@@ -338,18 +338,18 @@
     {
         "id":  "satsuki",
         "asset":  "assets/images/satsuki.jpg",
-        "title":  "Azaleas",
-        "creator":  "cbellh47",
-        "creator_url":  "https://www.flickr.com/photos/25438769@N07",
-        "license":  "CC BY 2.0",
-        "license_code":  "by",
-        "license_url":  "https://creativecommons.org/licenses/by/2.0/",
-        "source_url":  "https://www.flickr.com/photos/25438769@N07/5644249367",
+        "title":  "Bonsai (Satsuki (Rhododendron indicum))",
+        "creator":  "s.itto",
+        "creator_url":  "https://www.flickr.com/photos/134987670@N03",
+        "license":  "CC BY-SA 2.0",
+        "license_code":  "by-sa",
+        "license_url":  "https://creativecommons.org/licenses/by-sa/2.0/",
+        "source_url":  "https://www.flickr.com/photos/134987670@N03/23411851023",
         "image_url":  "https://live.staticflickr.com/5146/5644249367_f431dd61ab_b.jpg",
-        "provider":  "flickr",
+        "provider":  "Openverse / Flickr",
         "width":  1024,
         "height":  681,
-        "attribution":  "\"Azaleas\" by cbellh47 is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/."
+        "attribution":  "\"Bonsai (Satsuki (Rhododendron indicum))\" by s.itto is licensed under CC BY-SA 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/2.0/."
     },
     {
         "id":  "fuji",

@@ -58,7 +58,7 @@ class _QuizScreenState extends State<QuizScreen> {
   Future<void> _prepareQuiz() async {
     final questions = widget.reviewOnly
         ? await _buildReviewQuestions()
-        : _buildNormalQuestions();
+        : await _buildNormalQuestions();
 
     setState(() {
       _questions = questions;
@@ -70,9 +70,14 @@ class _QuizScreenState extends State<QuizScreen> {
     }
   }
 
-  List<Flower> _buildNormalQuestions() {
-    final shuffled = flowersByDifficulty(widget.difficulty)..shuffle(_random);
-    return shuffled.take(_normalQuestionCount).toList();
+  Future<List<Flower>> _buildNormalQuestions() async {
+    final progressMap = await _progressService.getAllProgress();
+    final prioritizedFlowers = prioritizeUnseenFlowers(
+      flowers: flowersByDifficulty(widget.difficulty),
+      progressMap: progressMap,
+      random: _random,
+    );
+    return prioritizedFlowers.take(_normalQuestionCount).toList();
   }
 
   Future<List<Flower>> _buildReviewQuestions() async {
@@ -266,6 +271,30 @@ class _QuizScreenState extends State<QuizScreen> {
       ),
     );
   }
+}
+
+List<Flower> prioritizeUnseenFlowers({
+  required List<Flower> flowers,
+  required Map<String, FlowerProgress> progressMap,
+  required Random random,
+}) {
+  final unseenFlowers = <Flower>[];
+  final seenFlowers = <Flower>[];
+
+  for (final flower in flowers) {
+    final progress = progressMap[flower.id];
+    final answerCount =
+        (progress?.correctCount ?? 0) + (progress?.wrongCount ?? 0);
+    if (answerCount == 0) {
+      unseenFlowers.add(flower);
+    } else {
+      seenFlowers.add(flower);
+    }
+  }
+
+  unseenFlowers.shuffle(random);
+  seenFlowers.shuffle(random);
+  return [...unseenFlowers, ...seenFlowers];
 }
 
 class _QuizImagePlaceholder extends StatelessWidget {

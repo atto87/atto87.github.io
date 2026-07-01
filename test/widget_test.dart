@@ -1,7 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hana_quiz_zukan/data/flower_data.dart';
 import 'package:hana_quiz_zukan/models/flower.dart';
 import 'package:hana_quiz_zukan/screens/encyclopedia_screen.dart';
+import 'package:hana_quiz_zukan/screens/quiz_screen.dart';
+import 'package:hana_quiz_zukan/services/learning_progress_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:hana_quiz_zukan/main.dart';
@@ -43,6 +48,26 @@ void main() {
     expect(find.text('クイズ'), findsOneWidget);
     expect(find.text('この花の名前は？'), findsOneWidget);
     expect(find.text(FlowerDifficulty.beginner.appLabel), findsNothing);
+  });
+
+  test('quiz prioritizes unseen flowers', () {
+    final progressMap = <String, FlowerProgress>{};
+    for (final flower in flowersByDifficulty(FlowerDifficulty.beginner)) {
+      if (flower.id != 'sakura') {
+        progressMap[flower.id] = const FlowerProgress(
+          correctCount: 1,
+          wrongCount: 0,
+        );
+      }
+    }
+
+    final prioritizedFlowers = prioritizeUnseenFlowers(
+      flowers: flowersByDifficulty(FlowerDifficulty.beginner),
+      progressMap: progressMap,
+      random: Random(0),
+    );
+
+    expect(prioritizedFlowers.first.id, 'sakura');
   });
 
   testWidgets('shows encyclopedia filter tabs', (WidgetTester tester) async {
