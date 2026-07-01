@@ -50,6 +50,16 @@ void main() {
     expect(find.text(FlowerDifficulty.beginner.appLabel), findsNothing);
   });
 
+  test('quiz flower meaning feedback text includes flower name and meanings',
+      () {
+    final flower = flowersByDifficulty(FlowerDifficulty.beginner).first;
+
+    expect(
+      flowerMeaningFeedbackText(flower),
+      '${flower.name}の花言葉：${flower.flowerMeanings.join('、')}',
+    );
+  });
+
   test('quiz prioritizes unseen flowers', () {
     final progressMap = <String, FlowerProgress>{};
     for (final flower in flowersByDifficulty(FlowerDifficulty.beginner)) {

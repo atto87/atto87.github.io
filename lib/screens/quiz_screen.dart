@@ -259,6 +259,8 @@ class _QuizScreenState extends State<QuizScreen> {
             ],
             if (_hasAnswered) ...[
               const SizedBox(height: 6),
+              _FlowerMeaningFeedback(flower: _currentFlower),
+              const SizedBox(height: 8),
               FilledButton(
                 onPressed: _goNext,
                 child: Text(
@@ -295,6 +297,40 @@ List<Flower> prioritizeUnseenFlowers({
   unseenFlowers.shuffle(random);
   seenFlowers.shuffle(random);
   return [...unseenFlowers, ...seenFlowers];
+}
+
+class _FlowerMeaningFeedback extends StatelessWidget {
+  const _FlowerMeaningFeedback({
+    required this.flower,
+  });
+
+  final Flower flower;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF6F8),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFFF1D7DF)),
+      ),
+      child: Text(
+        flowerMeaningFeedbackText(flower),
+        style: const TextStyle(
+          color: Color(0xFF6E3F4B),
+          fontSize: 14,
+          fontWeight: FontWeight.w800,
+          height: 1.35,
+        ),
+      ),
+    );
+  }
+}
+
+String flowerMeaningFeedbackText(Flower flower) {
+  return '${flower.name}の花言葉：${flower.flowerMeanings.join('、')}';
 }
 
 class _QuizImagePlaceholder extends StatelessWidget {
