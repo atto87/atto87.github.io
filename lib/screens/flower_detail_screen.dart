@@ -125,17 +125,7 @@ class _FlowerDetailPage extends StatelessWidget {
       key: PageStorageKey<String>('flower-detail-${flower.id}'),
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: AspectRatio(
-            aspectRatio: 4 / 3,
-            child: Image.asset(
-              flower.imagePath,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const _LargePlaceholder(),
-            ),
-          ),
-        ),
+        _FlowerImageGallery(flower: flower),
         const SizedBox(height: 20),
         Text(
           flower.name,
@@ -152,6 +142,162 @@ class _FlowerDetailPage extends StatelessWidget {
         if (flower.similarFlowers.isNotEmpty)
           _SimilarFlowersSection(similarFlowerNames: flower.similarFlowers),
       ],
+    );
+  }
+}
+
+class _FlowerImageGallery extends StatefulWidget {
+  const _FlowerImageGallery({required this.flower});
+
+  final Flower flower;
+
+  @override
+  State<_FlowerImageGallery> createState() => _FlowerImageGalleryState();
+}
+
+class _FlowerImageGalleryState extends State<_FlowerImageGallery> {
+  late final PageController _controller;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final imagePaths = widget.flower.imagePaths;
+    final hasMultipleImages = imagePaths.length > 1;
+
+    return Column(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: AspectRatio(
+            aspectRatio: 4 / 3,
+            child: GestureDetector(
+              onTap: hasMultipleImages ? _showNextImage : null,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  PageView.builder(
+                    key: Key('flower-image-gallery-${widget.flower.id}'),
+                    controller: _controller,
+                    physics: hasMultipleImages
+                        ? const PageScrollPhysics()
+                        : const NeverScrollableScrollPhysics(),
+                    itemCount: imagePaths.length,
+                    onPageChanged: (index) {
+                      setState(() => _currentIndex = index);
+                    },
+                    itemBuilder: (context, index) => Image.asset(
+                      imagePaths[index],
+                      key: Key('flower-image-${widget.flower.id}-$index'),
+                      fit: BoxFit.cover,
+                      semanticLabel: index == 0
+                          ? '${widget.flower.name}の花のアップ'
+                          : '${widget.flower.name}の葉や株、群生の様子',
+                      errorBuilder: (_, __, ___) => const _LargePlaceholder(),
+                    ),
+                  ),
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.62),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        child: Text(
+                          '${_currentIndex + 1}/${imagePaths.length}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 10,
+                    bottom: 10,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.62),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        child: Text(
+                          _currentIndex == 0 ? '花のアップ' : '葉・株・群生の様子',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        if (hasMultipleImages) ...[
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (var index = 0; index < imagePaths.length; index++)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: index == _currentIndex ? 20 : 8,
+                  height: 8,
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  decoration: BoxDecoration(
+                    color: index == _currentIndex
+                        ? const Color(0xFFE35D82)
+                        : const Color(0xFFE2D3D7),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            '画像をタップまたは左右にスワイプ',
+            style: TextStyle(
+              color: Color(0xFF7A666B),
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  void _showNextImage() {
+    final nextIndex = (_currentIndex + 1) % widget.flower.imagePaths.length;
+    _controller.animateToPage(
+      nextIndex,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOut,
     );
   }
 }

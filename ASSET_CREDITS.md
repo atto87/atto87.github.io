@@ -106,3 +106,20 @@ Keep these credits with distribution materials. CC BY, CC BY-SA, CC BY-NC, and C
 | `assets/images/gekkabijin.jpg` | A Dama de frente...(HDR-Orton).........DSCF2308a | [SantaRosa OLD SKOOL](https://www.flickr.com/photos/93087247@N00) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/93087247@N00/2277585612) |
 | `assets/images/matsubabotan.jpg` | Moss Rose | [jayeshp912](https://www.flickr.com/photos/54439360@N04) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/54439360@N04/5690347114) |
 | `assets/images/kalanchoe.jpg` | Kalanchoe flower in Madagascar | [wallygrom](https://www.flickr.com/photos/33037982@N04) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | [source](https://www.flickr.com/photos/33037982@N04/3448695898) |
+
+## Context images
+
+These second images show the whole plant, foliage, garden habit, or mass planting.
+
+| Asset | Title | Creator | License | Source |
+|---|---|---|---|---|
+| `assets/images/sakura_context.jpg` | Row of Cherry Blossom Trees | [mrhayata](https://www.flickr.com/photos/36516818@N00) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | [source](https://www.flickr.com/photos/36516818@N00/7054071923) |
+| `assets/images/tulip_context.jpg` | Tulip Fields Forever | [wyntuition](https://www.flickr.com/photos/15926096@N00) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | [source](https://www.flickr.com/photos/15926096@N00/2433357422) |
+| `assets/images/sunflower_context.jpg` | Sunflower Field in Kansas | [ted_M8](https://www.flickr.com/photos/86408441@N08) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | [source](https://www.flickr.com/photos/86408441@N08/9399711558) |
+| `assets/images/hydrangea_context.jpg` | Knockpatrick Gardens | [IrishFireside](https://www.flickr.com/photos/43762537@N00) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/43762537@N00/2373917914) |
+| `assets/images/cosmos_context.jpg` | Cosmos flower field #1 | [Takashi(aes256)](https://www.flickr.com/photos/46151146@N04) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | [source](https://www.flickr.com/photos/46151146@N04/8090491148) |
+| `assets/images/lavender_context.jpg` | Lavender Field - Clairmont Farms | [puliarf](https://www.flickr.com/photos/11418908@N07) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/11418908@N07/4802806954) |
+| `assets/images/rose_context.jpg` | Pink Rose Bush | [Kaz Andrew](https://www.flickr.com/photos/22907821@N02) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | [source](https://www.flickr.com/photos/22907821@N02/2802925702) |
+| `assets/images/camellia_context.jpg` | Camellia in Shinjuku Gyoen National Garden | [Tatters ✾](https://www.flickr.com/photos/62938898@N00) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | [source](https://www.flickr.com/photos/62938898@N00/18523195424) |
+| `assets/images/ume_context.jpg` | Pink Tree | [rumpleteaser](https://www.flickr.com/photos/45958245@N00) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/45958245@N00/127509131) |
+| `assets/images/nemophila_context.jpg` | Nemophila field | [okoysm](https://www.flickr.com/photos/146604558@N08) | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [source](https://www.flickr.com/photos/146604558@N08/35461128176) |

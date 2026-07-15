@@ -55,7 +55,18 @@ void main() {
 
   test('all flower image assets exist', () {
     for (final flower in flowers) {
-      expect(File(flower.imagePath).existsSync(), isTrue, reason: flower.id);
+      for (final imagePath in flower.imagePaths) {
+        expect(File(imagePath).existsSync(), isTrue, reason: flower.id);
+      }
+    }
+  });
+
+  test('the first ten flowers have close-up and context images', () {
+    for (final flower in flowers.take(10)) {
+      expect(flower.imagePaths, hasLength(2), reason: flower.id);
+    }
+    for (final flower in flowers.skip(10)) {
+      expect(flower.imagePaths, hasLength(1), reason: flower.id);
     }
   });
 
@@ -66,8 +77,16 @@ void main() {
         .cast<Map<String, dynamic>>()
         .map((credit) => credit['id'] as String)
         .toSet();
+    final creditedAssets = credits
+        .cast<Map<String, dynamic>>()
+        .map((credit) => credit['asset'] as String)
+        .toSet();
 
-    expect(credits, hasLength(100));
+    expect(credits, hasLength(110));
     expect(creditIds, containsAll(flowers.map((flower) => flower.id)));
+    expect(
+      creditedAssets,
+      containsAll(flowers.expand((flower) => flower.imagePaths)),
+    );
   });
 }

@@ -189,10 +189,29 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.drag(
-      find.byKey(const Key('flower-detail-pages')),
-      const Offset(-500, 0),
+    expect(find.text('花のアップ'), findsOneWidget);
+    await tester.tap(
+      find.byKey(Key('flower-image-gallery-${detailFlowers.first.id}')),
     );
+    await tester.pumpAndSettle();
+    expect(find.text('葉・株・群生の様子'), findsOneWidget);
+
+    await tester.drag(
+      find.byKey(Key('flower-image-gallery-${detailFlowers.first.id}')),
+      const Offset(500, 0),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('花のアップ'), findsOneWidget);
+
+    await tester.drag(
+      find.byKey(
+        PageStorageKey<String>('flower-detail-${detailFlowers.first.id}'),
+      ),
+      const Offset(0, -400),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.dragFrom(const Offset(400, 320), const Offset(-500, 0));
     await tester.pumpAndSettle();
 
     expect(

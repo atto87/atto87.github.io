@@ -2,7 +2,7 @@ class Flower {
   const Flower({
     required this.id,
     required this.name,
-    required this.imagePath,
+    required this.imagePaths,
     required this.difficulty,
     required this.season,
     required this.colors,
@@ -14,7 +14,8 @@ class Flower {
 
   final String id;
   final String name;
-  final String imagePath;
+  final List<String> imagePaths;
+  String get imagePath => imagePaths.first;
   final FlowerDifficulty difficulty;
   final String season;
   final List<String> colors;
