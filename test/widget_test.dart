@@ -57,6 +57,31 @@ void main() {
     expect(find.text(FlowerDifficulty.beginner.appLabel), findsNothing);
   });
 
+  testWidgets('quiz shows both flower images with tap and swipe navigation',
+      (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
+
+    await tester.pumpWidget(const HanaQuizApp());
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(FilledButton).first);
+    await tester.pumpAndSettle();
+
+    final gallery = find.byType(PageView);
+    expect(gallery, findsOneWidget);
+    expect(find.text('1/2'), findsOneWidget);
+    expect(find.text('花のアップ'), findsOneWidget);
+
+    await tester.tap(gallery);
+    await tester.pumpAndSettle();
+    expect(find.text('2/2'), findsOneWidget);
+    expect(find.text('葉・株・群生の様子'), findsOneWidget);
+
+    await tester.drag(gallery, const Offset(500, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('1/2'), findsOneWidget);
+    expect(find.text('花のアップ'), findsOneWidget);
+  });
+
   testWidgets('season quiz opens with season title',
       (WidgetTester tester) async {
     SharedPreferences.setMockInitialValues({});

@@ -61,12 +61,9 @@ void main() {
     }
   });
 
-  test('the first ten flowers have close-up and context images', () {
-    for (final flower in flowers.take(10)) {
+  test('all flowers have close-up and context images', () {
+    for (final flower in flowers) {
       expect(flower.imagePaths, hasLength(2), reason: flower.id);
-    }
-    for (final flower in flowers.skip(10)) {
-      expect(flower.imagePaths, hasLength(1), reason: flower.id);
     }
   });
 
@@ -82,7 +79,7 @@ void main() {
         .map((credit) => credit['asset'] as String)
         .toSet();
 
-    expect(credits, hasLength(110));
+    expect(credits, hasLength(200));
     expect(creditIds, containsAll(flowers.map((flower) => flower.id)));
     expect(
       creditedAssets,

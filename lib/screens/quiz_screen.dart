@@ -256,16 +256,9 @@ class _QuizScreenState extends State<QuizScreen> {
               ),
             ),
             const SizedBox(height: 6),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: AspectRatio(
-                aspectRatio: 16 / 10,
-                child: Image.asset(
-                  _currentFlower.imagePath,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const _QuizImagePlaceholder(),
-                ),
-              ),
+            _QuizImageGallery(
+              key: ValueKey('quiz-gallery-${_currentFlower.id}'),
+              flower: _currentFlower,
             ),
             const SizedBox(height: 12),
             const Text(
@@ -297,6 +290,136 @@ class _QuizScreenState extends State<QuizScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _QuizImageGallery extends StatefulWidget {
+  const _QuizImageGallery({
+    super.key,
+    required this.flower,
+  });
+
+  final Flower flower;
+
+  @override
+  State<_QuizImageGallery> createState() => _QuizImageGalleryState();
+}
+
+class _QuizImageGalleryState extends State<_QuizImageGallery> {
+  late final PageController _controller;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final imagePaths = widget.flower.imagePaths;
+    final hasMultipleImages = imagePaths.length > 1;
+
+    return Column(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: AspectRatio(
+            aspectRatio: 16 / 10,
+            child: GestureDetector(
+              onTap: hasMultipleImages ? _showNextImage : null,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  PageView.builder(
+                    key: Key('quiz-image-gallery-${widget.flower.id}'),
+                    controller: _controller,
+                    physics: hasMultipleImages
+                        ? const PageScrollPhysics()
+                        : const NeverScrollableScrollPhysics(),
+                    itemCount: imagePaths.length,
+                    onPageChanged: (index) {
+                      setState(() => _currentIndex = index);
+                    },
+                    itemBuilder: (context, index) => Image.asset(
+                      imagePaths[index],
+                      key: Key('quiz-flower-image-${widget.flower.id}-$index'),
+                      fit: BoxFit.cover,
+                      semanticLabel: index == 0
+                          ? '${widget.flower.name}の花のアップ'
+                          : '${widget.flower.name}の葉や株、群生の様子',
+                      errorBuilder: (_, __, ___) =>
+                          const _QuizImagePlaceholder(),
+                    ),
+                  ),
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.62),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        child: Text(
+                          '${_currentIndex + 1}/${imagePaths.length}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 10,
+                    bottom: 10,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.62),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        child: Text(
+                          _currentIndex == 0 ? '花のアップ' : '葉・株・群生の様子',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showNextImage() {
+    final nextIndex = (_currentIndex + 1) % widget.flower.imagePaths.length;
+    _controller.animateToPage(
+      nextIndex,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOut,
     );
   }
 }
