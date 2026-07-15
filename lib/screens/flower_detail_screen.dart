@@ -3,49 +3,217 @@ import 'package:flutter/material.dart';
 import '../data/flower_data.dart';
 import '../models/flower.dart';
 
-class FlowerDetailScreen extends StatelessWidget {
+class FlowerDetailArguments {
+  const FlowerDetailArguments({
+    required this.flowers,
+    required this.initialIndex,
+  });
+
+  final List<Flower> flowers;
+  final int initialIndex;
+}
+
+class FlowerDetailScreen extends StatefulWidget {
   const FlowerDetailScreen({super.key});
 
   static const String routeName = '/flower-detail';
 
   @override
+  State<FlowerDetailScreen> createState() => _FlowerDetailScreenState();
+}
+
+class _FlowerDetailScreenState extends State<FlowerDetailScreen> {
+  late List<Flower> _flowers;
+  late PageController _pageController;
+  int _currentIndex = 0;
+  bool _initialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_initialized) return;
+
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+    if (arguments is FlowerDetailArguments && arguments.flowers.isNotEmpty) {
+      _flowers = List<Flower>.of(arguments.flowers);
+      _currentIndex = arguments.initialIndex.clamp(0, _flowers.length - 1);
+    } else if (arguments is Flower) {
+      _flowers = List<Flower>.of(flowers);
+      final index = _flowers.indexWhere((flower) => flower.id == arguments.id);
+      _currentIndex = index < 0 ? 0 : index;
+    } else {
+      _flowers = List<Flower>.of(flowers);
+    }
+
+    _pageController = PageController(initialPage: _currentIndex);
+    _initialized = true;
+  }
+
+  @override
+  void dispose() {
+    if (_initialized) _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final flower = ModalRoute.of(context)!.settings.arguments! as Flower;
+    final flower = _flowers[_currentIndex];
 
     return Scaffold(
-      appBar: AppBar(title: Text(flower.name)),
+      appBar: AppBar(
+        title: Text(flower.name),
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Text(
+                '${_currentIndex + 1}/${_flowers.length}',
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ),
+          ),
+        ],
+      ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+        child: Column(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: AspectRatio(
-                aspectRatio: 4 / 3,
-                child: Image.asset(
-                  flower.imagePath,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const _LargePlaceholder(),
+            Expanded(
+              child: PageView.builder(
+                key: const Key('flower-detail-pages'),
+                controller: _pageController,
+                itemCount: _flowers.length,
+                onPageChanged: (index) => setState(() => _currentIndex = index),
+                itemBuilder: (context, index) =>
+                    _FlowerDetailPage(flower: _flowers[index]),
+              ),
+            ),
+            _PageNavigation(
+              previousName:
+                  _currentIndex > 0 ? _flowers[_currentIndex - 1].name : null,
+              nextName: _currentIndex < _flowers.length - 1
+                  ? _flowers[_currentIndex + 1].name
+                  : null,
+              onPrevious:
+                  _currentIndex > 0 ? () => _goToPage(_currentIndex - 1) : null,
+              onNext: _currentIndex < _flowers.length - 1
+                  ? () => _goToPage(_currentIndex + 1)
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _goToPage(int index) {
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOut,
+    );
+  }
+}
+
+class _FlowerDetailPage extends StatelessWidget {
+  const _FlowerDetailPage({required this.flower});
+
+  final Flower flower;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      key: PageStorageKey<String>('flower-detail-${flower.id}'),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: AspectRatio(
+            aspectRatio: 4 / 3,
+            child: Image.asset(
+              flower.imagePath,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => const _LargePlaceholder(),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          flower.name,
+          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
+        ),
+        const SizedBox(height: 16),
+        _InfoRow(label: '段階', value: flower.difficulty.appLabel),
+        _InfoRow(label: '季節', value: flower.season),
+        _InfoRow(label: '色', value: flower.colors.join('、')),
+        _InfoRow(label: '花言葉', value: flower.flowerMeanings.join('、')),
+        const SizedBox(height: 16),
+        _Section(title: '特徴', body: flower.description),
+        _Section(title: '見分け方', body: flower.howToIdentify),
+        if (flower.similarFlowers.isNotEmpty)
+          _SimilarFlowersSection(similarFlowerNames: flower.similarFlowers),
+      ],
+    );
+  }
+}
+
+class _PageNavigation extends StatelessWidget {
+  const _PageNavigation({
+    required this.previousName,
+    required this.nextName,
+    required this.onPrevious,
+    required this.onNext,
+  });
+
+  final String? previousName;
+  final String? nextName;
+  final VoidCallback? onPrevious;
+  final VoidCallback? onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Color(0xFFF1E4E8))),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextButton.icon(
+                onPressed: onPrevious,
+                icon: const Icon(Icons.chevron_left),
+                label: Text(
+                  previousName ?? '前の花',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-            Text(
-              flower.name,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
-            ),
-            const SizedBox(height: 16),
-            _InfoRow(label: '段階', value: flower.difficulty.appLabel),
-            _InfoRow(label: '季節', value: flower.season),
-            _InfoRow(label: '色', value: flower.colors.join('、')),
-            _InfoRow(label: '花言葉', value: flower.flowerMeanings.join('、')),
-            const SizedBox(height: 16),
-            _Section(title: '特徴', body: flower.description),
-            _Section(title: '見分け方', body: flower.howToIdentify),
-            if (flower.similarFlowers.isNotEmpty)
-              _SimilarFlowersSection(
-                similarFlowerNames: flower.similarFlowers,
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                '左右にスワイプ',
+                style: TextStyle(
+                  color: Color(0xFF7A666B),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
+            ),
+            Expanded(
+              child: TextButton.icon(
+                onPressed: onNext,
+                iconAlignment: IconAlignment.end,
+                icon: const Icon(Icons.chevron_right),
+                label: Text(
+                  nextName ?? '次の花',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -54,9 +222,7 @@ class FlowerDetailScreen extends StatelessWidget {
 }
 
 class _SimilarFlowersSection extends StatelessWidget {
-  const _SimilarFlowersSection({
-    required this.similarFlowerNames,
-  });
+  const _SimilarFlowersSection({required this.similarFlowerNames});
 
   final List<String> similarFlowerNames;
 
@@ -65,9 +231,7 @@ class _SimilarFlowersSection extends StatelessWidget {
     final similarFlowers =
         similarFlowerNames.map(flowerByName).whereType<Flower>().toList();
 
-    if (similarFlowers.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (similarFlowers.isEmpty) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 18),
@@ -119,10 +283,7 @@ class _LargePlaceholder extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _InfoRow({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -157,10 +318,7 @@ class _InfoRow extends StatelessWidget {
 }
 
 class _Section extends StatelessWidget {
-  const _Section({
-    required this.title,
-    required this.body,
-  });
+  const _Section({required this.title, required this.body});
 
   final String title;
   final String body;
