@@ -67,6 +67,39 @@ void main() {
     }
   });
 
+  test('reverses the image roles for flagged flowers', () {
+    const reversedIds = {
+      'nanohana',
+      'yukiyanagi',
+      'ayame',
+      'kakitsubata',
+      'hanashoubu',
+      'freesia',
+      'anemone',
+      'kasumisou',
+      'amaryllis',
+    };
+
+    for (final id in reversedIds) {
+      final flower = flowers.firstWhere((candidate) => candidate.id == id);
+      expect(
+        flower.imagePaths,
+        [
+          'assets/images/${id}_context.jpg',
+          'assets/images/$id.jpg',
+        ],
+        reason: id,
+      );
+    }
+  });
+
+  test('separates the two images for previously duplicated pairs', () {
+    for (final id in ['hananira', 'alstroemeria']) {
+      final flower = flowers.firstWhere((candidate) => candidate.id == id);
+      expect(flower.imagePaths[0], isNot(flower.imagePaths[1]), reason: id);
+    }
+  });
+
   test('asset credits cover every flower image', () {
     final credits = jsonDecode(File('asset_credits.json').readAsStringSync())
         as List<dynamic>;

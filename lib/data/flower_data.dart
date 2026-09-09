@@ -2,6 +2,18 @@ import '../models/flower.dart';
 
 const String placeholderFlowerImagePath = 'assets/images/placeholder.jpg';
 
+const _reversedFlowerImageIds = <String>{
+  'nanohana',
+  'yukiyanagi',
+  'ayame',
+  'kakitsubata',
+  'hanashoubu',
+  'freesia',
+  'anemone',
+  'kasumisou',
+  'amaryllis',
+};
+
 final List<Flower> flowers = [
   _flower(
     id: 'sakura',
@@ -902,6 +914,7 @@ Flower _entry(
         details?.description ?? '$nameは${difficulty.appLabel}として収録している花です。',
     howToIdentify: details?.howToIdentify ?? '$nameの見分け方は準備中です。',
     similarFlowers: details?.similarFlowers ?? const [],
+    reverseImages: _reversedFlowerImageIds.contains(id),
   );
 }
 
@@ -915,14 +928,16 @@ Flower _flower({
   String? description,
   String? howToIdentify,
   List<String> similarFlowers = const [],
+  bool reverseImages = false,
 }) {
+  final imagePaths = <String>[
+    imagePath ?? placeholderFlowerImagePath,
+    'assets/images/${id}_context.jpg',
+  ];
   return Flower(
     id: id,
     name: name,
-    imagePaths: [
-      imagePath ?? placeholderFlowerImagePath,
-      'assets/images/${id}_context.jpg',
-    ],
+    imagePaths: reverseImages ? imagePaths.reversed.toList() : imagePaths,
     difficulty: difficulty,
     season: season,
     colors: colors,
