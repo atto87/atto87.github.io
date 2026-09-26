@@ -19,16 +19,16 @@ class ProgressSummary extends StatelessWidget {
       padding: EdgeInsets.all(compact ? 12 : 18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFF1E4E8)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E6DA)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '学習状況',
+            'あなたの学習ノート',
             style: TextStyle(
-              fontSize: compact ? 16 : 18,
+              fontSize: compact ? 12 : 16,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -44,14 +44,14 @@ class ProgressSummary extends StatelessWidget {
               ),
               Expanded(
                 child: _SummaryItem(
-                  label: '花の数',
+                  label: '図鑑の花',
                   value: '${summary.registeredFlowerCount}',
                   compact: compact,
                 ),
               ),
               Expanded(
                 child: _SummaryItem(
-                  label: '苦手',
+                  label: '復習する花',
                   value: '${summary.weakFlowerCount}',
                   compact: compact,
                 ),
@@ -63,7 +63,7 @@ class ProgressSummary extends StatelessWidget {
             Text(
               '最後の学習 ${_formatDate(summary.lastStudiedAt!)}',
               style: TextStyle(
-                color: const Color(0xFF7A666B),
+                color: const Color(0xFF727C70),
                 fontSize: compact ? 12 : 14,
               ),
             ),
@@ -99,14 +99,14 @@ class _SummaryItem extends StatelessWidget {
           style: TextStyle(
             fontSize: compact ? 20 : 24,
             fontWeight: FontWeight.w900,
-            color: const Color(0xFFE35D82),
+            color: const Color(0xFF35634D),
           ),
         ),
         SizedBox(height: compact ? 0 : 2),
         Text(
           label,
           style: TextStyle(
-            color: const Color(0xFF7A666B),
+            color: const Color(0xFF727C70),
             fontWeight: FontWeight.w700,
             fontSize: compact ? 12 : 14,
           ),

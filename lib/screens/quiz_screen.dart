@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../data/flower_data.dart';
 import '../models/flower.dart';
@@ -50,6 +51,7 @@ class _QuizScreenState extends State<QuizScreen> {
   int _currentIndex = 0;
   String? _selectedName;
   bool _hasAnswered = false;
+  bool _isSaving = false;
 
   Flower get _currentFlower => _questions[_currentIndex];
 
@@ -71,6 +73,7 @@ class _QuizScreenState extends State<QuizScreen> {
         ? await _buildReviewQuestions()
         : await _buildNormalQuestions();
 
+    if (!mounted) return;
     setState(() {
       _questions = questions;
       _isLoading = false;
@@ -146,17 +149,29 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Future<void> _selectAnswer(String selectedName) async {
-    if (_hasAnswered) {
+    if (_hasAnswered || _isSaving) {
       return;
     }
 
     final isCorrect = selectedName == _currentFlower.name;
-    await _progressService.recordAnswer(
-      flowerId: _currentFlower.id,
-      isCorrect: isCorrect,
-    );
-
+    setState(() => _isSaving = true);
+    try {
+      await _progressService.recordAnswer(
+        flowerId: _currentFlower.id,
+        isCorrect: isCorrect,
+      );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('記録できませんでした。もう一度お試しください。')),
+      );
+      return;
+    }
+    if (!mounted) return;
+    HapticFeedback.lightImpact();
     setState(() {
+      _isSaving = false;
       _selectedName = selectedName;
       _hasAnswered = true;
       _records = [
@@ -244,6 +259,38 @@ class _QuizScreenState extends State<QuizScreen> {
         title: Text(_screenTitle),
         toolbarHeight: 48,
       ),
+      bottomNavigationBar: _hasAnswered
+          ? SafeArea(
+              top: false,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                decoration: const BoxDecoration(
+                    color: Color(0xFFFAF8F2),
+                    border: Border(top: BorderSide(color: Color(0xFFE2E6DA)))),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Semantics(
+                      liveRegion: true,
+                      child: Text(
+                        _selectedName == _currentFlower.name
+                            ? '正解！ ひと花、覚えました。'
+                            : '正解は「${_currentFlower.name}」。次はきっと！',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w800, fontSize: 15),
+                      )),
+                  const SizedBox(height: 6),
+                  _FlowerMeaningFeedback(flower: _currentFlower),
+                  const SizedBox(height: 8),
+                  FilledButton.icon(
+                      onPressed: _goNext,
+                      iconAlignment: IconAlignment.end,
+                      icon: const Icon(Icons.arrow_forward_rounded, size: 20),
+                      label: Text(_currentIndex + 1 >= _questions.length
+                          ? '結果を見る'
+                          : '次の問題')),
+                ]),
+              ),
+            )
+          : null,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
@@ -255,7 +302,22 @@ class _QuizScreenState extends State<QuizScreen> {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
+            TweenAnimationBuilder<double>(
+              tween: Tween(
+                  end: (_currentIndex + (_hasAnswered ? 1 : 0)) /
+                      _questions.length),
+              duration: MediaQuery.disableAnimationsOf(context)
+                  ? Duration.zero
+                  : const Duration(milliseconds: 350),
+              builder: (context, value, _) => LinearProgressIndicator(
+                value: value,
+                minHeight: 6,
+                borderRadius: BorderRadius.circular(20),
+                semanticsLabel: 'クイズの進み具合',
+              ),
+            ),
+            const SizedBox(height: 14),
             _QuizImageGallery(
               key: ValueKey('quiz-gallery-${_currentFlower.id}'),
               flower: _currentFlower,
@@ -269,23 +331,14 @@ class _QuizScreenState extends State<QuizScreen> {
             for (final choice in _choices) ...[
               AnswerButton(
                 text: choice,
-                onPressed: _hasAnswered ? null : () => _selectAnswer(choice),
+                onPressed: _hasAnswered || _isSaving
+                    ? null
+                    : () => _selectAnswer(choice),
                 isSelected: _selectedName == choice,
                 isCorrectAnswer: choice == _currentFlower.name,
                 hasAnswered: _hasAnswered,
               ),
               const SizedBox(height: 8),
-            ],
-            if (_hasAnswered) ...[
-              const SizedBox(height: 6),
-              _FlowerMeaningFeedback(flower: _currentFlower),
-              const SizedBox(height: 8),
-              FilledButton(
-                onPressed: _goNext,
-                child: Text(
-                  _currentIndex + 1 >= _questions.length ? '結果を見る' : '次の問題',
-                ),
-              ),
             ],
           ],
         ),
@@ -330,7 +383,7 @@ class _QuizImageGalleryState extends State<_QuizImageGallery> {
     return Column(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(20),
           child: AspectRatio(
             aspectRatio: 16 / 10,
             child: GestureDetector(
@@ -352,9 +405,8 @@ class _QuizImageGalleryState extends State<_QuizImageGallery> {
                       imagePaths[index],
                       key: Key('quiz-flower-image-${widget.flower.id}-$index'),
                       fit: BoxFit.cover,
-                      semanticLabel: index == 0
-                          ? '${widget.flower.name}の花のアップ'
-                          : '${widget.flower.name}の葉や株、群生の様子',
+                      semanticLabel:
+                          index == 0 ? '出題中の花のアップ' : '出題中の花の葉や株、群生の様子',
                       errorBuilder: (_, __, ___) =>
                           const _QuizImagePlaceholder(),
                     ),
@@ -462,7 +514,7 @@ class _FlowerMeaningFeedback extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: const Color(0xFFFFF6F8),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: const Color(0xFFF1D7DF)),
       ),
       child: Text(

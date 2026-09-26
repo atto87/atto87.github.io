@@ -65,7 +65,7 @@ class _EncyclopediaScreenState extends State<EncyclopediaScreen> {
                   onChanged: (value) => setState(() => _query = value),
                   textInputAction: TextInputAction.search,
                   decoration: InputDecoration(
-                    hintText: '花の名前などで検索',
+                    hintText: '名前・季節・花言葉で探す',
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: _query.isEmpty
                         ? null
@@ -155,9 +155,10 @@ class _FlowerGrid extends StatelessWidget {
 
     return GridView.builder(
       padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.72,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: MediaQuery.sizeOf(context).width > 580 ? 3 : 2,
+        mainAxisExtent:
+            270 + (MediaQuery.textScalerOf(context).scale(14) - 14) * 5,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
       ),

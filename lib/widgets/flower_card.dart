@@ -19,8 +19,8 @@ class FlowerCard extends StatelessWidget {
       color: Colors.white,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: Color(0xFFF1E4E8)),
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFFE2E6DA)),
       ),
       child: InkWell(
         onTap: onTap,
@@ -53,7 +53,7 @@ class FlowerCard extends StatelessWidget {
                   Text(
                     flower.season,
                     style: const TextStyle(
-                      color: Color(0xFF7A666B),
+                      color: Color(0xFF727C70),
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -63,7 +63,7 @@ class FlowerCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: Color(0xFFE35D82),
+                      color: Color(0xFFA55870),
                       fontWeight: FontWeight.w800,
                     ),
                   ),

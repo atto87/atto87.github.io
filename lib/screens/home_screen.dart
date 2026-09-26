@@ -93,7 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             );
 
-            if (!compact) {
+            if (!compact ||
+                constraints.maxHeight < 580 ||
+                MediaQuery.textScalerOf(context).scale(14) > 18) {
               return ListView(children: [content]);
             }
 
@@ -118,242 +120,225 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _HomeContent extends StatelessWidget {
-  const _HomeContent({
-    required this.compact,
-    required this.summaryFuture,
-    required this.onOpenQuiz,
-    required this.onOpenSeasonQuiz,
-    required this.onOpenRoute,
-  });
-
+  const _HomeContent(
+      {required this.compact,
+      required this.summaryFuture,
+      required this.onOpenQuiz,
+      required this.onOpenSeasonQuiz,
+      required this.onOpenRoute});
   final bool compact;
   final Future<ProgressSummaryData> summaryFuture;
-  final Future<void> Function(FlowerDifficulty difficulty) onOpenQuiz;
-  final Future<void> Function(FlowerQuizSeason season) onOpenSeasonQuiz;
-  final Future<void> Function(String routeName) onOpenRoute;
+  final Future<void> Function(FlowerDifficulty) onOpenQuiz;
+  final Future<void> Function(FlowerQuizSeason) onOpenSeasonQuiz;
+  final Future<void> Function(String) onOpenRoute;
 
   @override
   Widget build(BuildContext context) {
-    final gap = compact ? 8.0 : 12.0;
-    final largeGap = compact ? 14.0 : 24.0;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          '写真を見て、花の名前を楽しく覚えよう。',
-          style: TextStyle(
-            fontSize: compact ? 15 : 18,
-            color: const Color(0xFF5F5054),
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        SizedBox(height: compact ? 12 : 20),
-        FutureBuilder<ProgressSummaryData>(
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      const _GardenWelcome(),
+      const SizedBox(height: 14),
+      FutureBuilder<ProgressSummaryData>(
           future: summaryFuture,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
+              return const SizedBox(
+                  height: 95,
+                  child: Center(child: CircularProgressIndicator()));
             }
-            return ProgressSummary(
-              summary: snapshot.data!,
-              compact: compact,
-            );
-          },
-        ),
-        SizedBox(height: largeGap),
-        _HomeButton(
-          compact: compact,
-          icon: Icons.quiz,
-          label: FlowerDifficulty.beginner.appLabel,
-          onPressed: () => onOpenQuiz(FlowerDifficulty.beginner),
-        ),
-        SizedBox(height: gap),
-        _HomeButton(
-          compact: compact,
-          icon: Icons.local_florist,
-          label: FlowerDifficulty.intermediate.appLabel,
-          onPressed: () => onOpenQuiz(FlowerDifficulty.intermediate),
-        ),
-        SizedBox(height: gap),
-        _HomeButton(
-          compact: compact,
-          icon: Icons.emoji_nature,
-          label: FlowerDifficulty.advanced.appLabel,
-          onPressed: () => onOpenQuiz(FlowerDifficulty.advanced),
-        ),
-        SizedBox(height: gap),
-        _SeasonQuizGrid(
-          compact: compact,
-          onOpenSeasonQuiz: onOpenSeasonQuiz,
-        ),
-        SizedBox(height: gap),
-        _HomeButton(
-          compact: compact,
-          outlined: true,
-          icon: Icons.menu_book,
-          label: '図鑑を見る',
-          onPressed: () => onOpenRoute(EncyclopediaScreen.routeName),
-        ),
-        SizedBox(height: gap),
-        _HomeButton(
-          compact: compact,
-          outlined: true,
-          icon: Icons.refresh,
-          label: '復習する',
-          onPressed: () => onOpenRoute(ReviewScreen.routeName),
-        ),
+            return ProgressSummary(summary: snapshot.data!, compact: true);
+          }),
+      const SizedBox(height: 18),
+      const _SectionLabel(title: '花の名前に、出会おう', caption: '難易度を選んで10問'),
+      const SizedBox(height: 10),
+      for (final difficulty in FlowerDifficulty.values) ...[
+        _DifficultyButton(
+            difficulty: difficulty, onPressed: () => onOpenQuiz(difficulty)),
+        const SizedBox(height: 8),
       ],
-    );
+      const SizedBox(height: 8),
+      const _SectionLabel(title: '季節をめぐる', caption: '四季の花クイズ'),
+      const SizedBox(height: 10),
+      Row(children: [
+        for (final season in FlowerQuizSeason.values) ...[
+          if (season.index > 0) const SizedBox(width: 8),
+          Expanded(
+              child: _SeasonButton(
+                  season: season, onPressed: () => onOpenSeasonQuiz(season))),
+        ],
+      ]),
+      const SizedBox(height: 18),
+      Row(children: [
+        Expanded(
+            child: OutlinedButton.icon(
+          onPressed: () => onOpenRoute(EncyclopediaScreen.routeName),
+          icon: const Icon(Icons.menu_book, size: 20),
+          label: const Text('図鑑を見る'),
+          style: OutlinedButton.styleFrom(
+              textStyle:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+        )),
+        const SizedBox(width: 10),
+        Expanded(
+            child: OutlinedButton.icon(
+          onPressed: () => onOpenRoute(ReviewScreen.routeName),
+          icon: const Icon(Icons.refresh, size: 20),
+          label: const Text('復習する'),
+          style: OutlinedButton.styleFrom(
+              textStyle:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+        )),
+      ]),
+    ]);
   }
 }
 
-class _SeasonQuizGrid extends StatelessWidget {
-  const _SeasonQuizGrid({
-    required this.compact,
-    required this.onOpenSeasonQuiz,
-  });
+class _GardenWelcome extends StatelessWidget {
+  const _GardenWelcome();
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: Stack(children: [
+          Positioned.fill(
+              child: Image.asset('assets/images/cosmos.jpg',
+                  fit: BoxFit.cover,
+                  excludeFromSemantics: true,
+                  alignment: const Alignment(0.4, 0))),
+          const Positioned.fill(
+              child: DecoratedBox(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+            colors: [Color(0xEF233D32), Color(0xAA233D32), Color(0x10233D32)],
+            stops: [0, 0.55, 1],
+          )))),
+          const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('HANA  /  BOTANICAL QUIZ',
+                      style: TextStyle(
+                          color: Color(0xFFDFE9CA),
+                          fontSize: 10,
+                          letterSpacing: 2,
+                          fontWeight: FontWeight.w700)),
+                  SizedBox(height: 9),
+                  Text('名前を知ると、\n世界がちょっと咲く。',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                          height: 1.35,
+                          fontWeight: FontWeight.w800)),
+                  SizedBox(height: 9),
+                  Text('ひと花ずつ、好きになる。',
+                      style: TextStyle(color: Color(0xFFF0F3E9), fontSize: 12)),
+                ],
+              )),
+        ]),
+      );
+}
 
-  final bool compact;
-  final Future<void> Function(FlowerQuizSeason season) onOpenSeasonQuiz;
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel({required this.title, required this.caption});
+  final String title;
+  final String caption;
+  @override
+  Widget build(BuildContext context) => Row(children: [
+        Expanded(
+            child: Text(title,
+                style: const TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.w800))),
+        Text(caption,
+            style: const TextStyle(fontSize: 10, color: Color(0xFF687466))),
+      ]);
+}
 
+class _DifficultyButton extends StatelessWidget {
+  const _DifficultyButton({required this.difficulty, required this.onPressed});
+  final FlowerDifficulty difficulty;
+  final VoidCallback onPressed;
   @override
   Widget build(BuildContext context) {
-    final gap = compact ? 8.0 : 10.0;
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: _SeasonButton(
-                compact: compact,
-                season: FlowerQuizSeason.spring,
-                icon: Icons.eco,
-                onPressed: () => onOpenSeasonQuiz(FlowerQuizSeason.spring),
-              ),
-            ),
-            SizedBox(width: gap),
-            Expanded(
-              child: _SeasonButton(
-                compact: compact,
-                season: FlowerQuizSeason.summer,
-                icon: Icons.wb_sunny,
-                onPressed: () => onOpenSeasonQuiz(FlowerQuizSeason.summer),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: gap),
-        Row(
-          children: [
-            Expanded(
-              child: _SeasonButton(
-                compact: compact,
-                season: FlowerQuizSeason.autumn,
-                icon: Icons.spa,
-                onPressed: () => onOpenSeasonQuiz(FlowerQuizSeason.autumn),
-              ),
-            ),
-            SizedBox(width: gap),
-            Expanded(
-              child: _SeasonButton(
-                compact: compact,
-                season: FlowerQuizSeason.winter,
-                icon: Icons.ac_unit,
-                onPressed: () => onOpenSeasonQuiz(FlowerQuizSeason.winter),
-              ),
-            ),
-          ],
-        ),
-      ],
+    final first = difficulty == FlowerDifficulty.beginner;
+    final colors = [
+      const Color(0xFF35634D),
+      const Color(0xFFEAF0E2),
+      const Color(0xFFF3E9E4)
+    ];
+    final ink = first ? Colors.white : const Color(0xFF364D3E);
+    return FilledButton(
+      onPressed: onPressed,
+      style: FilledButton.styleFrom(
+          backgroundColor: colors[difficulty.index],
+          foregroundColor: ink,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          minimumSize: const Size.fromHeight(58)),
+      child: Row(children: [
+        Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+                color: first
+                    ? Colors.white.withValues(alpha: 0.15)
+                    : Colors.white.withValues(alpha: 0.7),
+                borderRadius: BorderRadius.circular(11)),
+            child: Icon(
+                [
+                  Icons.spa_outlined,
+                  Icons.local_florist_outlined,
+                  Icons.auto_awesome_outlined
+                ][difficulty.index],
+                size: 21)),
+        const SizedBox(width: 12),
+        Expanded(
+            child: Text(difficulty.appLabel,
+                style: const TextStyle(
+                    fontSize: 13, fontWeight: FontWeight.w700))),
+        const SizedBox(width: 4),
+        const Icon(Icons.arrow_forward_rounded, size: 18),
+      ]),
     );
   }
 }
 
 class _SeasonButton extends StatelessWidget {
-  const _SeasonButton({
-    required this.compact,
-    required this.season,
-    required this.icon,
-    required this.onPressed,
-  });
-
-  final bool compact;
+  const _SeasonButton({required this.season, required this.onPressed});
   final FlowerQuizSeason season;
-  final IconData icon;
   final VoidCallback onPressed;
-
   @override
   Widget build(BuildContext context) {
-    return FilledButton.tonalIcon(
+    final colors = [
+      const Color(0xFFF5E4E8),
+      const Color(0xFFEEF0D5),
+      const Color(0xFFF6E8D8),
+      const Color(0xFFE4EDF1)
+    ];
+    final inks = [
+      const Color(0xFF985168),
+      const Color(0xFF697631),
+      const Color(0xFF9A633A),
+      const Color(0xFF507584)
+    ];
+    return FilledButton(
       onPressed: onPressed,
-      icon: Icon(icon, size: compact ? 17 : 20),
-      label: Text(
-        '${season.label}の花',
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
       style: FilledButton.styleFrom(
-        minimumSize: Size.fromHeight(compact ? 38 : 44),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        textStyle: TextStyle(
-          fontSize: compact ? 13 : 15,
-          fontWeight: FontWeight.w800,
-        ),
-        padding: EdgeInsets.symmetric(horizontal: compact ? 8 : 12),
-      ),
-    );
-  }
-}
-
-class _HomeButton extends StatelessWidget {
-  const _HomeButton({
-    required this.compact,
-    required this.icon,
-    required this.label,
-    required this.onPressed,
-    this.outlined = false,
-  });
-
-  final bool compact;
-  final IconData icon;
-  final String label;
-  final VoidCallback onPressed;
-  final bool outlined;
-
-  @override
-  Widget build(BuildContext context) {
-    final minimumSize = Size.fromHeight(compact ? 44 : 54);
-    final textStyle = TextStyle(
-      fontSize: compact ? 14 : 17,
-      fontWeight: FontWeight.w700,
-    );
-
-    if (outlined) {
-      return OutlinedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon, size: compact ? 19 : 22),
-        label: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
-        style: OutlinedButton.styleFrom(
-          minimumSize: minimumSize,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          textStyle: textStyle,
-          padding: EdgeInsets.symmetric(horizontal: compact ? 12 : 18),
-        ),
-      );
-    }
-
-    return FilledButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon, size: compact ? 19 : 22),
-      label: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
-      style: FilledButton.styleFrom(
-        minimumSize: minimumSize,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        textStyle: textStyle,
-        padding: EdgeInsets.symmetric(horizontal: compact ? 12 : 18),
-      ),
+          backgroundColor: colors[season.index],
+          foregroundColor: inks[season.index],
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 13),
+          minimumSize: const Size(0, 72)),
+      child: Column(children: [
+        Icon(
+            [
+              Icons.filter_vintage_outlined,
+              Icons.wb_sunny_outlined,
+              Icons.eco_outlined,
+              Icons.ac_unit
+            ][season.index],
+            size: 23),
+        const SizedBox(height: 6),
+        Text('${season.label}の花',
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
+      ]),
     );
   }
 }

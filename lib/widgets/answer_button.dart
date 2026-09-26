@@ -22,19 +22,37 @@ class AnswerButton extends StatelessWidget {
     final backgroundColor = _backgroundColor();
     final borderColor = _borderColor(colorScheme);
 
-    return SizedBox(
+    return AnimatedContainer(
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : const Duration(milliseconds: 200),
+      curve: Curves.easeOutCubic,
+      decoration: BoxDecoration(
+          color: backgroundColor, borderRadius: BorderRadius.circular(18)),
       width: double.infinity,
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
           foregroundColor: const Color(0xFF3F3336),
-          backgroundColor: backgroundColor,
+          backgroundColor: Colors.transparent,
+          disabledForegroundColor: const Color(0xFF3F3336),
           side: BorderSide(color: borderColor, width: 1.5),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
           alignment: Alignment.centerLeft,
         ),
         child: Row(
           children: [
+            Icon(
+                hasAnswered && isCorrectAnswer
+                    ? Icons.check_circle_rounded
+                    : hasAnswered && isSelected
+                        ? Icons.cancel_outlined
+                        : Icons.circle_outlined,
+                size: 21,
+                color: hasAnswered && (isCorrectAnswer || isSelected)
+                    ? _statusColor(context)
+                    : const Color(0xFF96A18E)),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
                 text,
@@ -87,7 +105,7 @@ class AnswerButton extends StatelessWidget {
 
   Color _borderColor(ColorScheme colorScheme) {
     if (!hasAnswered) {
-      return const Color(0xFFEADDE1);
+      return const Color(0xFFDFE5D9);
     }
     if (isCorrectAnswer) {
       return const Color(0xFF43A85D);
@@ -95,7 +113,7 @@ class AnswerButton extends StatelessWidget {
     if (isSelected) {
       return colorScheme.error;
     }
-    return const Color(0xFFEADDE1);
+    return const Color(0xFFDFE5D9);
   }
 }
 

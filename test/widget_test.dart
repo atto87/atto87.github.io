@@ -88,6 +88,8 @@ void main() {
 
     await tester.pumpWidget(const HanaQuizApp());
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('春の花'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('春の花'));
     await tester.pumpAndSettle();
 

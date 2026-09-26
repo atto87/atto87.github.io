@@ -22,26 +22,71 @@ class ResultScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(24, 32, 24, 28),
           children: [
-            const Icon(
-              Icons.local_florist,
-              size: 76,
-              color: Color(0xFFE97896),
-            ),
-            const SizedBox(height: 18),
-            Text(
-              '${result.totalQuestions}問中 ${result.correctCount}問正解',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '正解率 $percent%',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 20,
-                color: Color(0xFF7A666B),
-                fontWeight: FontWeight.w800,
-              ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
+              decoration: BoxDecoration(
+                  color: const Color(0xFFEAF0E2),
+                  borderRadius: BorderRadius.circular(28)),
+              child: Column(children: [
+                const Text('TODAY’S BLOOM',
+                    style: TextStyle(
+                        fontSize: 11,
+                        letterSpacing: 3,
+                        color: Color(0xFF62754F),
+                        fontWeight: FontWeight.w700)),
+                const SizedBox(height: 22),
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: result.accuracy),
+                  duration: MediaQuery.disableAnimationsOf(context)
+                      ? Duration.zero
+                      : const Duration(milliseconds: 900),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, _) => SizedBox(
+                      width: 142,
+                      height: 142,
+                      child: Stack(alignment: Alignment.center, children: [
+                        SizedBox.expand(
+                            child: CircularProgressIndicator(
+                                value: value,
+                                strokeWidth: 7,
+                                backgroundColor: Colors.white,
+                                strokeCap: StrokeCap.round,
+                                semanticsLabel: '正解率 $percent%')),
+                        Padding(
+                            padding: const EdgeInsets.all(18),
+                            child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.local_florist_outlined,
+                                          color: Color(0xFF35634D), size: 30),
+                                      Text('${(value * 100).round()}%',
+                                          style: const TextStyle(
+                                              fontSize: 36,
+                                              fontWeight: FontWeight.w800,
+                                              color: Color(0xFF35634D))),
+                                      const Text('正解率',
+                                          style: TextStyle(fontSize: 11)),
+                                    ]))),
+                      ])),
+                ),
+                const SizedBox(height: 22),
+                Text(
+                    percent == 100
+                        ? '満開です、おめでとう！'
+                        : percent >= 70
+                            ? '花の名前が、咲いてきた！'
+                            : '今日の出会いが、明日の花に。',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 19, fontWeight: FontWeight.w800)),
+                const SizedBox(height: 10),
+                Text('${result.totalQuestions}問中 ${result.correctCount}問正解',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w700)),
+              ]),
             ),
             if (!result.isReviewMode) ...[
               const SizedBox(height: 8),

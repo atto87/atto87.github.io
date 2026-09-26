@@ -179,7 +179,7 @@ class _FlowerImageGalleryState extends State<_FlowerImageGallery> {
     return Column(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(22),
           child: AspectRatio(
             aspectRatio: 4 / 3,
             child: GestureDetector(
@@ -271,7 +271,7 @@ class _FlowerImageGalleryState extends State<_FlowerImageGallery> {
                   margin: const EdgeInsets.symmetric(horizontal: 3),
                   decoration: BoxDecoration(
                     color: index == _currentIndex
-                        ? const Color(0xFFE35D82)
+                        ? const Color(0xFF35634D)
                         : const Color(0xFFE2D3D7),
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -282,7 +282,7 @@ class _FlowerImageGalleryState extends State<_FlowerImageGallery> {
           const Text(
             '画像をタップまたは左右にスワイプ',
             style: TextStyle(
-              color: Color(0xFF7A666B),
+              color: Color(0xFF727C70),
               fontSize: 12,
               fontWeight: FontWeight.w700,
             ),
@@ -320,7 +320,7 @@ class _PageNavigation extends StatelessWidget {
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFF1E4E8))),
+        border: Border(top: BorderSide(color: Color(0xFFE2E6DA))),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -342,7 +342,7 @@ class _PageNavigation extends StatelessWidget {
               child: Text(
                 '左右にスワイプ',
                 style: TextStyle(
-                  color: Color(0xFF7A666B),
+                  color: Color(0xFF727C70),
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
                 ),
@@ -446,7 +446,7 @@ class _InfoRow extends StatelessWidget {
             child: Text(
               label,
               style: const TextStyle(
-                color: Color(0xFF7A666B),
+                color: Color(0xFF727C70),
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -471,8 +471,13 @@ class _Section extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 18),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFE2E6DA))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
